@@ -26,25 +26,25 @@ public class InteractableObject : MonoBehaviour
             //Right
             if (Input.GetKey(KeyCode.E))
             {
-                transform.Rotate(Vector3.down * RotationSpeed);
+                transform.Rotate(Vector3.down * RotationSpeed, Space.World);
             }
 
             //Left
             else if (Input.GetKey(KeyCode.Q))
             {
-                transform.Rotate(Vector3.up * RotationSpeed);
+                transform.Rotate(Vector3.up * RotationSpeed, Space.World);
             }
 
             //Up
             else if (Input.GetKey(KeyCode.R))
             {
-                transform.Rotate(Vector3.right * RotationSpeed);
+                transform.Rotate(player.transform.right * RotationSpeed, Space.World);
             }
 
             //Down
             else if (Input.GetKey(KeyCode.F))
             {
-                transform.Rotate(Vector3.left * RotationSpeed);
+                transform.Rotate(-player.transform.right * RotationSpeed, Space.World);
             }
 
             rigidBody.velocity = Vector3.zero;
