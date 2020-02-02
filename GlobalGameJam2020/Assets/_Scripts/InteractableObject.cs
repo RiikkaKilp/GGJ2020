@@ -53,7 +53,7 @@ public class InteractableObject : MonoBehaviour
 
         rigidBody.isKinematic = false;
         itemPicked = true;
-        GetComponent<Renderer>().material.color = Color.blue;
+        GetComponent<Renderer>().material.color = defaultColor;
 
         transform.SetParent(objectPlacement);
         rigidBody.useGravity = false;
