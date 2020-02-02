@@ -15,12 +15,14 @@ public class InteractableObject : MonoBehaviour
 
     private bool isAttachable = false;
     private GameObject currentCollision;
+    private Color defaultColor;
 
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
         objectPlacement = GameObject.Find("ObjectPlacement").transform;
         player = GameObject.FindGameObjectWithTag("MainCamera");
+        defaultColor = GetComponent<Renderer>().material.color;
     }
 
     private void Update()
@@ -41,7 +43,7 @@ public class InteractableObject : MonoBehaviour
         if(isHighlighted)
             GetComponent<Renderer>().material.color = Color.green;
         else
-            GetComponent<Renderer>().material.color = Color.red;
+            GetComponent<Renderer>().material.color = defaultColor;
     }
 
     public void PickItem()
@@ -63,7 +65,7 @@ public class InteractableObject : MonoBehaviour
             return;
 
         itemPicked = false;
-        GetComponent<Renderer>().material.color = Color.red;
+        GetComponent<Renderer>().material.color = defaultColor;
 
         transform.SetParent(null);
 
@@ -82,7 +84,7 @@ public class InteractableObject : MonoBehaviour
         itemPicked = false;
         itemFreezed = true;
         rigidBody.isKinematic = true;
-        GetComponent<Renderer>().material.color = Color.black;
+        GetComponent<Renderer>().material.color = Color.gray;
 
         transform.SetParent(null);
 
