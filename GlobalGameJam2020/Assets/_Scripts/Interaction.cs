@@ -20,6 +20,9 @@ public class Interaction : MonoBehaviour
             CheckForInteractables();
         }
 
+        if (currentInteractable == null)
+            return;
+
         if (Input.GetMouseButtonDown(0) && !holdingObject)
         {
             if (currentInteractable == null)
@@ -34,6 +37,33 @@ public class Interaction : MonoBehaviour
                 return;
             currentInteractable.DropItem();
             holdingObject = false;
+        }
+
+        if (currentInteractable.itemPicked)
+        {
+            //Right
+            if (Input.GetKey(KeyCode.E))
+            {
+                currentInteractable.RotateItem(Vector3.down);
+            }
+
+            //Left
+            else if (Input.GetKey(KeyCode.Q))
+            {
+                currentInteractable.RotateItem(Vector3.up);
+            }
+
+            //Up
+            else if (Input.GetKey(KeyCode.R))
+            {
+                currentInteractable.RotateItem(transform.right);
+            }
+
+            //Down
+            else if (Input.GetKey(KeyCode.F))
+            {
+                currentInteractable.RotateItem(-transform.right);
+            }
         }
     }
 

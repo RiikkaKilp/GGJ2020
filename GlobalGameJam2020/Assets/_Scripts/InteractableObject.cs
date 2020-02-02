@@ -11,6 +11,10 @@ public class InteractableObject : MonoBehaviour
     private Transform objectPlacement;
     private GameObject player;
     public bool itemPicked;
+    public bool itemFreezed = false;
+
+    private bool isAttachable = false;
+    private GameObject currentCollision;
 
     private void Awake()
     {
@@ -23,29 +27,7 @@ public class InteractableObject : MonoBehaviour
     {
         if (itemPicked)
         {
-            //Right
-            if (Input.GetKey(KeyCode.E))
-            {
-                transform.Rotate(Vector3.down * RotationSpeed, Space.World);
-            }
-
-            //Left
-            else if (Input.GetKey(KeyCode.Q))
-            {
-                transform.Rotate(Vector3.up * RotationSpeed, Space.World);
-            }
-
-            //Up
-            else if (Input.GetKey(KeyCode.R))
-            {
-                transform.Rotate(player.transform.right * RotationSpeed, Space.World);
-            }
-
-            //Down
-            else if (Input.GetKey(KeyCode.F))
-            {
-                transform.Rotate(-player.transform.right * RotationSpeed, Space.World);
-            }
+            //rigidBody.MovePosition(objectPlacement.position);
 
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
@@ -53,6 +35,9 @@ public class InteractableObject : MonoBehaviour
     }
     public void ObjectHighlight(bool isHighlighted)
     {
+        if (itemFreezed)
+            return;
+
         if(isHighlighted)
             GetComponent<Renderer>().material.color = Color.green;
         else
@@ -61,17 +46,22 @@ public class InteractableObject : MonoBehaviour
 
     public void PickItem()
     {
+        if (itemFreezed)
+            return;
+
         rigidBody.isKinematic = false;
         itemPicked = true;
         GetComponent<Renderer>().material.color = Color.blue;
 
         transform.SetParent(objectPlacement);
-        transform.position = objectPlacement.position;
         rigidBody.useGravity = false;
     }
 
     public void DropItem()
     {
+        if (itemFreezed)
+            return;
+
         itemPicked = false;
         GetComponent<Renderer>().material.color = Color.red;
 
@@ -83,7 +73,14 @@ public class InteractableObject : MonoBehaviour
 
     public void FreezeItem()
     {
+        if (!isAttachable)
+        {
+            DropItem();
+            return;
+        }
+
         itemPicked = false;
+        itemFreezed = true;
         rigidBody.isKinematic = true;
         GetComponent<Renderer>().material.color = Color.black;
 
@@ -93,8 +90,22 @@ public class InteractableObject : MonoBehaviour
         rigidBody.detectCollisions = true;
     }
 
-    public void OnCollisionEnter(Collision itemCollision)
+    public void RotateItem(Vector3 rotationAxis)
     {
-        
+        transform.Rotate(rotationAxis * RotationSpeed, Space.World);
+    }
+
+    public void OnCollisionStay(Collision itemCollision)
+    {
+        if (itemCollision.gameObject.transform.IsChildOf(this.transform))
+            return;
+        currentCollision = itemCollision.gameObject;
+        isAttachable = true;
+    }
+
+    public void OnCollisionExit(Collision itemCollision)
+    {
+        currentCollision = itemCollision.gameObject;
+        isAttachable = false;
     }
 }
